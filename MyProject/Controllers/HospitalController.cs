@@ -132,6 +132,7 @@ namespace MyProject.Controllers
             ViewBag.DepartmentCount = dataContext.Departments.Count();
 
             return View();
+
         }
 
 

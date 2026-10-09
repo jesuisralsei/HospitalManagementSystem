@@ -40,10 +40,8 @@ Some functionality is still being developed and tested.
 
 ## 🚧 Planned Improvements
 
-* Medical record PDF upload and download
 * Complete doctor–patient assignment workflow
 * Improved validation and error handling
-* Authentication and role-based authorization
 * Dashboard and user interface improvements
 * Deployment and cloud database configuration
 

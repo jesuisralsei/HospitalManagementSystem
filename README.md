@@ -71,3 +71,18 @@ Features, architecture, and documentation may change as the project evolves.
 ## 👨‍💻 Author
 
 Developed as a personal learning and portfolio project.
+
+
+## 📸 Screenshots
+
+![Hospital Management System](HMS1.PNG)
+
+
+
+![Hospital Management System](HMS2.PNG)
+
+
+
+
+![Hospital Management System](HMS3.PNG)
+

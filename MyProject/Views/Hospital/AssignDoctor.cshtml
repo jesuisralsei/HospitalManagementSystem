@@ -1,0 +1,19 @@
+﻿@model IEnumerable<MyProject.Models.Doctor>;
+
+<h2>assign patient to the doctor</h2>
+
+@foreach(var patient in Model)
+{
+	if (patient.Patients != null)
+	{
+		@foreach (var Patient in patient.Patients)
+		{
+			<td>@Patient.PatientName</td>
+			break;
+		}
+	}
+	else
+	{
+		<h2>there was an error loading the patients</h2>
+	}
+}

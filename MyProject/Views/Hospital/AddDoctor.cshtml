@@ -1,0 +1,64 @@
+﻿@model MyProject.Models.Doctor
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Form Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-2 text-success fs-1">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <h2 class="fw-bold">Add New Doctor</h2>
+                        <p class="text-muted small">Fill in the details below to register a new doctor.</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form asp-action="AddDoctor" method="post" class="needs-validation" novalidate>
+
+                        <div class="mb-3">
+                            <label asp-for="DoctorName" class="form-label fw-semibold">Doctor Name</label>
+                            <input asp-for="DoctorName" class="form-control" placeholder="e.g., Dr. John Smith" required />
+                            <span asp-validation-for="DoctorName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DoctorDescription" class="form-label fw-semibold">Description / Bio</label>
+                            <textarea asp-for="DoctorDescription" class="form-control" rows="3" placeholder="Brief background or specialization details..."></textarea>
+                            <span asp-validation-for="DoctorDescription" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DoctorAge" class="form-label fw-semibold">Age</label>
+                                <input asp-for="DoctorAge" type="number" class="form-control" placeholder="e.g., 42" />
+                                <span asp-validation-for="DoctorAge" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DoctorLocation" class="form-label fw-semibold">Location / Clinic</label>
+                                <input asp-for="DoctorLocation" class="form-control" placeholder="e.g., Building A, Room 302" />
+                                <span asp-validation-for="DoctorLocation" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="DoctorProfessionality" class="form-label fw-semibold">Specialization / Professionality</label>
+                            <input asp-for="DoctorProfessionality" class="form-control" placeholder="e.g., Cardiologist, Neurologist" />
+                            <span asp-validation-for="DoctorProfessionality" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg text-white shadow-sm">Save Doctor</button>
+                            <a asp-action="Doctor" class="btn btn-light text-muted border">Cancel</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

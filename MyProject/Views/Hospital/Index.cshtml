@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Alpine.js for interactivity -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<div class="container my-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">Hospital Management</h1>
+        <p class="text-muted">Welcome to the dashboard. Choose an option below to get started.</p>
+    </div>
+
+    <!-- Action Cards Grid -->
+    <div class="row g-4 justify-content-center">
+        <!-- View Patients -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="mb-3 text-primary fs-1">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h4 class="card-title fw-semibold">Patients</h4>
+                        <p class="card-text text-muted small">View and manage the list of registered patients.</p>
+                    </div>
+                    <a class="btn btn-outline-primary mt-3 stretched-link" asp-area="" asp-controller="Hospital" asp-action="Patient">View Patients</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Doctors -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="mb-3 text-success fs-1">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <h4 class="card-title fw-semibold">Doctors</h4>
+                        <p class="card-text text-muted small">Browse medical staff and doctor profiles.</p>
+                    </div>
+                    <a class="btn btn-outline-success mt-3 stretched-link" asp-area="" asp-controller="Hospital" asp-action="Doctor">View Doctors</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Patient -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="mb-3 text-primary fs-1">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h4 class="card-title fw-semibold">Add Patient</h4>
+                        <p class="card-text text-muted small">Register a new patient into the system.</p>
+                    </div>
+                    <a class="btn btn-primary mt-3 stretched-link text-white" asp-area="" asp-controller="Hospital" asp-action="AddPatient">Add Patient</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Doctor -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="mb-3 text-success fs-1">
+                            <i class="bi bi-person-heart"></i>
+                        </div>
+                        <h4 class="card-title fw-semibold">Add Doctor</h4>
+                        <p class="card-text text-muted small">Onboard a new doctor to the hospital directory.</p>
+                    </div>
+                    <a class="btn btn-success mt-3 stretched-link text-white" asp-area="" asp-controller="Hospital" asp-action="AddDoctor">Add Doctor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!--Add Department-->
+
+<div class="col-md-5 col-lg-4">
+    <div class="card h-100 shadow-sm border-0 hover-card">
+        <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+            <div>
+                <div class="mb-3 text-success fs-1">
+                    <i class="bi bi-person-heart"></i>
+                </div>
+                <h4 class="card-title fw-semibold">Add Doctor</h4>
+                <p class="card-text text-muted small">Onboard a new doctor to the hospital directory.</p>
+            </div>
+            <a class="btn btn-success mt-3 stretched-link text-white" asp-area="" asp-controller="Hospital" asp-action="AddDepartment">Add Department</a>
+        </div>
+    </div>
+</div>
+                    </div>
+
+
+<!-- Optional: Smooth hover effect styles -->
+<style>
+    .hover-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+    }
+</style>

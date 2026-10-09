@@ -1,0 +1,125 @@
+﻿@model IEnumerable<MyProject.Models.Department>
+
+@{
+    ViewData["Title"] = "Hospital Departments";
+}
+
+
+
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 pb-3 border-bottom">
+        <div>
+            <h1 class="fw-bold text-dark display-6 mb-1">
+                <i class="bi bi-building-fill-gear text-warning me-2"></i>Hospital Departments
+            </h1>
+            <p class="text-muted mb-0">Manage active clinical units, capacity, and facility details.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex gap-2">
+            <a asp-action="AddDepartment" class="btn btn-warning text-white fw-semibold shadow-sm px-4 py-2 rounded-pill">
+                <i class="bi bi-plus-circle me-1"></i> Add Department
+            </a>
+            <a asp-controller="Hospital" asp-action="DashBoard" class="btn btn-light border fw-semibold px-4 py-2 rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Departments Grid -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var department in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 hover-card transition-all">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            
+                            <div>
+                                <!-- Card Header & Status Badge -->
+                                <div class="d-flex align-items-start justify-between mb-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-3 fs-4 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-hospital"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="card-title fw-bold text-dark mb-0 fs-5">@department.Name</h4>
+                                            <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i>@(string.IsNullOrEmpty(department.Location) ? "Main Facility" : department.Location)</span>
+                                        </div>
+                                    </div>
+                                    @if (department.IsActive)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1 rounded-pill small">Inactive</span>
+                                    }
+                                </div>
+
+                                <!-- Description -->
+                                <p class="card-text text-muted small mb-4 line-clamp-2" style="min-height: 38px;">
+                                    @(string.IsNullOrEmpty(department.Description) ? "No description provided for this clinical unit." : department.Description)
+                                </p>
+
+                                <!-- Metrics Grid (Beds & Capacity) -->
+                                <div class="row g-2 mb-4 bg-light p-3 rounded-3 text-center border-0">
+                                    <div class="col-6 border-end">
+                                        <span class="d-block text-uppercase text-muted fs-xs fw-semibold" style="font-size: 0.7rem;">Beds</span>
+                                        <span class="fw-bold text-dark fs-5"><i class="bi bi-bed text-warning me-1"></i>@department.NumberOfBeds</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="d-block text-uppercase text-muted fs-xs fw-semibold" style="font-size: 0.7rem;">Capacity</span>
+                                        <span class="fw-bold text-dark fs-5"><i class="bi bi-people text-primary me-1"></i>@department.Capacity</span>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Info -->
+                                <div class="small text-muted space-y-1 mb-2">
+                                    <div class="text-truncate mb-1">
+                                        <i class="bi bi-telephone text-secondary me-2"></i>@(string.IsNullOrEmpty(department.PhoneNumber) ? "No phone listed" : department.PhoneNumber)
+                                    </div>
+                                    <div class="text-truncate">
+                                        <i class="bi bi-envelope text-secondary me-2"></i>@(string.IsNullOrEmpty(department.Email) ? "No email listed" : department.Email)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Created Date -->
+                            <div class="pt-3 mt-3 border-top d-flex align-items-center justify-content-between text-muted" style="font-size: 0.8rem;">
+                                <span>Added: @department.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                <span class="text-warning fw-semibold text-decoration-none cursor-pointer">Details <i class="bi bi-arrow-right ms-1"></i></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="text-center py-5 bg-light rounded-4 border border-2 border-dashed">
+            <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px; font-size: 2rem;">
+                <i class="bi bi-building-slash"></i>
+            </div>
+            <h3 class="fw-bold text-dark">No Departments Found</h3>
+            <p class="text-muted small mb-4">Get started by adding your first hospital department unit to the system.</p>
+            <a asp-action="AddDepartment" class="btn btn-warning text-white fw-semibold px-4 py-2 rounded-pill shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i> Add Department
+            </a>
+        </div>
+    }
+</div>
+
+<!-- Custom Polish Styles -->
+<style>
+    .hover-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.1) !important;
+    }
+</style>

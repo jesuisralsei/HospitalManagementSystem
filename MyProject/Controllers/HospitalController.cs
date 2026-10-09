@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using MyProject.Data;
 using MyProject.Models;
@@ -134,7 +135,47 @@ namespace MyProject.Controllers
             return View();
 
         }
+        // Get method for uploading medical records
+        [HttpPost]
 
+        public async Task<IActionResult> UploadMedicalRecord(int patientId, IFormFile medicalRecord)
+        {
+            if (medicalRecord != null && medicalRecord.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                Directory.CreateDirectory(uploadsFolder); // Ensure the directory exists
+                var filePath = Path.Combine(uploadsFolder, medicalRecord.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await medicalRecord.CopyToAsync(stream);
+                }
+                // Update the patient's MedicalRecordPath in the database
+                var patient = dataContext.Patients.FirstOrDefault(p => p.PatientId == patientId);
+                if (patient != null)
+                {
+                    patient.MedicalRecordPath = filePath;
+                    dataContext.SaveChanges();
+                }
+                return RedirectToAction("Patient");
+            }
+            return View("UploadMedicalRecord"); // Handle error case
+        }
 
+        public IActionResult UploadMedicalRecord()
+        {
+            return View();
+        }
+
+        //patient details page
+        public IActionResult PatientDetails(int? Id)
+        {
+            var patient = dataContext.Patients.FirstOrDefault(p => p.PatientId == Id);
+
+            if (patient == null)
+                return NotFound();
+
+            return View(patient);
+    
+        }
     }
 }

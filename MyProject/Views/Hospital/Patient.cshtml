@@ -75,6 +75,18 @@
                                         <i class="bi bi-geo-alt text-danger me-1"></i>@(string.IsNullOrEmpty(patient.PatientLocation) ? "Main Ward" : patient.PatientLocation)
                                     </span>
                                 </td>
+                                        <!--Details Button-->
+                                <td class="pe-4 py-3">
+                                    
+                                    
+                                    <span class="text-dark fw-medium small">
+<a href="@Url.Action("PatientDetails", "Hospital", new { id = patient.PatientId })">
+    Patient Details
+</a>                                        
+                                    </span>
+                                   
+                                </td>
+                              
                             </tr>
                         }
                     </tbody>

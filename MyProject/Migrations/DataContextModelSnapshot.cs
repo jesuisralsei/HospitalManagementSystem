@@ -89,9 +89,6 @@ namespace MyProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorId"));
 
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DoctorAge")
                         .HasColumnType("int");
 
@@ -121,8 +118,6 @@ namespace MyProject.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("DoctorId");
-
-                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("DoctorPatientDoctorsDoctorId", "DoctorPatientPatientsPatientId");
 
@@ -190,6 +185,10 @@ namespace MyProject.Migrations
 
                     b.Property<int?>("DoctorPatientPatientsPatientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("MedicalRecordPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientAge")
                         .HasColumnType("int");
@@ -270,10 +269,6 @@ namespace MyProject.Migrations
 
             modelBuilder.Entity("MyProject.Models.Doctor", b =>
                 {
-                    b.HasOne("MyProject.Models.Department", null)
-                        .WithMany("Doctors")
-                        .HasForeignKey("DepartmentId");
-
                     b.HasOne("MyProject.Models.DoctorPatient", null)
                         .WithMany("doctors")
                         .HasForeignKey("DoctorPatientDoctorsDoctorId", "DoctorPatientPatientsPatientId");
@@ -326,11 +321,6 @@ namespace MyProject.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("MyProject.Models.Department", b =>
-                {
-                    b.Navigation("Doctors");
                 });
 
             modelBuilder.Entity("MyProject.Models.DoctorPatient", b =>

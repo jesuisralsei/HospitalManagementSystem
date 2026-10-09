@@ -28,6 +28,9 @@ namespace MyProject.Models
 
         public List<Visits>? Visits {get; set; }
 
+        [NotMapped]
+        public IFormFile? MedicalRecord { get; set; }
 
+        public string MedicalRecordPath { get; set; } = null!;
     }
 }

@@ -177,5 +177,61 @@ namespace MyProject.Controllers
             return View(patient);
     
         }
+
+        //update the patient information
+
+        public async Task<IActionResult> UpdatePatient(int Id)
+        {
+            var patient = await dataContext.Patients.FirstOrDefaultAsync(p => p.PatientId == Id);
+            return View(patient);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePatient(int Id, Patient patient)
+        {
+            if (ModelState.IsValid)
+            {
+                dataContext.Patients.Update(patient);
+               await dataContext.SaveChangesAsync();
+                return RedirectToAction($"PatientDetails/{Id}");
+            }
+            return View(patient);
+        }
+
+        //Doctor Details
+
+        public IActionResult DoctorDetails(int? Id)
+        {
+            var doctor = dataContext.Doctors.FirstOrDefault(p => p.DoctorId == Id);
+
+            if (doctor == null)
+                return NotFound();
+
+            return View(doctor);
+
+        }
+
+
+        //Update doctor
+
+        public async Task<IActionResult> UpdateDoctor(int Id)
+        {
+            var doctor = await dataContext.Doctors.FirstOrDefaultAsync(d => d.DoctorId == Id);
+            return View(doctor);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDoctor(int Id, Doctor doctor)
+        {
+            if (ModelState.IsValid)
+            {
+                dataContext.Doctors.Update(doctor);
+                await dataContext.SaveChangesAsync();
+                return RedirectToAction($"DoctorDetails/{Id}");
+            }
+            return View(doctor);
+        }
     }
 }

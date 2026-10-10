@@ -1,0 +1,105 @@
+﻿@model MyProject.Models.Patient
+
+@{
+    ViewData["Title"] = "Edit Patient's Data";
+}
+
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+
+                <!-- Header Banner -->
+                <div class="bg-primary bg-gradient px-4 py-4 text-white">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-white bg-opacity-25 rounded-3 d-flex align-items-center justify-content-center fs-3" style="width: 50px; height: 50px;">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+                        <div>
+                            <h2 class="fw-bold mb-1 fs-4">Update Patient's data</h2>
+                            <p class="text-white-50 small mb-0">Fill in the patient details and assign a doctor.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Body -->
+                <form asp-action="UpdatePatient" method="post" class="card-body p-4 p-md-5">
+
+                    <!-- Patient Name -->
+                    <div class="mb-3">
+                        <label asp-for="PatientName" class="form-label fw-semibold text-dark small">Patient Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person"></i></span>
+                            <input asp-for="PatientName" class="form-control bg-light border-start-0 py-2.5" placeholder="@Model.PatientName" />
+                        </div>
+                        <span asp-validation-for="PatientName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Patient Description -->
+                    <div class="mb-3">
+                        <label asp-for="PatientDescription" class="form-label fw-semibold text-dark small">Medical Condition / Description</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0 align-items-start pt-2"><i class="bi bi-journal-medical"></i></span>
+                            <textarea asp-for="PatientDescription" rows="3" class="form-control bg-light border-start-0 py-2.5" placeholder="Enter symptoms or medical notes"></textarea>
+                        </div>
+                        <span asp-validation-for="PatientDescription" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Age & Location Grid -->
+                    <div class="row g-3 mb-3">
+                        <!-- Patient Age -->
+                        <div class="col-sm-6">
+                            <label asp-for="PatientAge" class="form-label fw-semibold text-dark small">Age</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-calendar-event"></i></span>
+                                <input asp-for="PatientAge" type="number" class="form-control bg-light border-start-0 py-2.5" placeholder="Age" />
+                            </div>
+                            <span asp-validation-for="PatientAge" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Patient Location -->
+                        <div class="col-sm-6">
+                            <label asp-for="PatientLocation" class="form-label fw-semibold text-dark small">Location / Ward</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-geo-alt"></i></span>
+                                <input asp-for="PatientLocation" class="form-control bg-light border-start-0 py-2.5" placeholder="Room or Ward" />
+                            </div>
+                            <span asp-validation-for="PatientLocation" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Doctor Assignment Dropdown -->
+                    <div class="mb-4">
+                        <label asp-for="DoctorId" class="form-label fw-semibold text-dark small">Assign Doctor</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person-badge"></i></span>
+                            <select asp-for="DoctorId" class="form-select bg-light border-start-0 py-2.5 cursor-pointer">
+                                <option value="">-- Select Attending Doctor --</option>
+                                @if (ViewBag.Doctors != null)
+                                {
+                                    @foreach (var doctor in ViewBag.Doctors)
+                                    {
+                                        <option value="@doctor.DoctorId">@doctor.DoctorName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="DoctorId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2 pt-2">
+                        <button type="submit" class="btn btn-primary fw-semibold py-3 rounded-pill shadow-sm">
+                            <i class="bi bi-person-plus-fill me-1"></i> Register Patient
+                        </button>
+                        <a asp-action="Patient" class="btn btn-light border fw-semibold py-3 rounded-pill text-muted">
+                            <i class="bi bi-arrow-left me-1"></i> Back to Patients List
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

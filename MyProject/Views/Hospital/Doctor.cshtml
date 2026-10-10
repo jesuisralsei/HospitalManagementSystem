@@ -4,7 +4,6 @@
     ViewData["Title"] = "Doctors Directory";
 }
 
-
 <div class="container py-5">
     <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 pb-3 border-bottom">
@@ -36,7 +35,9 @@
                             <th class="py-3">Specialty / Professionality</th>
                             <th class="py-3">Bio / Description</th>
                             <th class="py-3 text-center">Age & Location</th>
-                            <th class="py-3 pe-4">Assigned Patients</th>
+                            <th class="py-3">Assigned Patients</th>
+                            <th class="py-3 text-center">Details</th>
+                            <th class="py-3 pe-4 text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +78,7 @@
                                 </td>
 
                                 <!-- Patients Badges -->
-                                <td class="pe-4 py-3">
+                                <td class="py-3">
                                     @if (doctor.Patients != null && doctor.Patients.Any())
                                     {
                                         <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
@@ -93,6 +94,20 @@
                                     {
                                         <span class="text-muted fst-italic small">No patients assigned</span>
                                     }
+                                </td>
+
+                                <!-- Doctors Details Link -->
+                                <td class="py-3 text-center">
+                                    <a asp-controller="Hospital" asp-action="DoctorDetails" asp-route-id="@doctor.DoctorId" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-semibold">
+                                        <i class="bi bi-info-circle me-1"></i> Details
+                                    </a>
+                                </td>
+
+                                <!-- Edit Action -->
+                                <td class="pe-4 py-3 text-end">
+                                    <a asp-action="UpdateDoctor" asp-route-id="@doctor.DoctorId" class="btn btn-sm btn-success text-white rounded-pill px-3 shadow-sm fw-semibold">
+                                        <i class="bi bi-pencil-square me-1"></i> Edit
+                                    </a>
                                 </td>
                             </tr>
                         }

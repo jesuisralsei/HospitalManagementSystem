@@ -1,18 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Protobuf.WellKnownTypes;
+using IronPdf;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using MyProject.Data;
 using MyProject.Models;
+using System.Linq.Expressions;
+
 
 namespace MyProject.Controllers
 {
     public class HospitalController : Controller
     {
         private readonly DataContext dataContext;
-        public HospitalController(DataContext _dataContext)
+        private readonly IWebHostEnvironment _environment;
+        public HospitalController(DataContext _dataContext, IWebHostEnvironment environment)
         {
             dataContext = _dataContext;
+            _environment = environment;
         }
 
         public IActionResult Index()
@@ -22,10 +31,50 @@ namespace MyProject.Controllers
 
 
 
-        public IActionResult Patient()
+        public IActionResult Patient(string term = "", string orderby = "", int currentPage = 1)
         {
-            var patients = dataContext.Patients;
-            return View(patients);
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(orderby) ? "name_desc" : "";
+            var PatData = new PatientViewModel();
+            int pageSize = 10;
+
+            var query = dataContext.Patients.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                query = query.Where(p => p.PatientName.StartsWith(term));
+            }
+
+
+
+
+
+            if (orderby == "name_desc")
+            {
+                query = query.OrderByDescending(p => p.PatientName);
+                PatData.OrderBy = "name_desc";
+            }
+            else
+            {
+                query = query.OrderBy(p => p.PatientName);
+                PatData.OrderBy = "name_asc";
+            }
+
+            int totalRecords = query.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            var patientsList = query
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList(); 
+
+            PatData.Patients = patientsList;
+            PatData.CurrentPage = currentPage;
+            PatData.TotalPages = totalPages;
+            PatData.PageSize = pageSize;
+            PatData.Term = term;
+            PatData.OrderBy = orderby;
+
+            return View(PatData);
         }
         //Get method for the patients
 
@@ -38,15 +87,37 @@ namespace MyProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddPatient(Patient patient)
+        public async Task<IActionResult> AddPatient(Patient patient) //IFormFile formfile
         {
+            //if (formfile == null)
+            //{
+            //    return BadRequest("No File Was Selected");
+            //}
+            //using var stream = new MemoryStream();
+            //formfile.CopyTo(stream);
+            //var pdfile = new PdfFileModel
+            //{
+            //    FileName = Path.GetFileName(formfile.FileName),
+            //    FilePath = Path.GetFullPath(formfile.FileName)
+
+            //};
+            string fileName = Guid.NewGuid().ToString() + "_" + patient.MedicalRecord.FileName;
+
+            string UploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            string filePath = Path.Combine(UploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await patient.MedicalRecord.CopyToAsync(stream);
+            }
+
+            patient.MedicalRecordPath = "/uploads/" + fileName;
+            ViewBag.Doctors = dataContext.Doctors.ToList();
             if (ModelState.IsValid)
             {
-
                 dataContext.Patients.Add(patient);
                 dataContext.SaveChanges();
                 return RedirectToAction("Patient");
-
             }
             return View(patient);
         }
@@ -232,6 +303,33 @@ namespace MyProject.Controllers
                 return RedirectToAction($"DoctorDetails/{Id}");
             }
             return View(doctor);
+        }
+
+        //making a visti
+
+        [HttpGet]
+        public IActionResult MakeVisit()
+        {
+            ViewBag.Doctors = dataContext.Doctors.ToList();
+            ViewBag.Patients = dataContext.Patients.ToList();
+            ViewBag.Departments = dataContext.Departments.ToList();
+            ViewBag.Visits = dataContext.Visits.ToList();
+            return View();
+
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> MakeVisit(Visits visit)
+        {
+            if (ModelState.IsValid) {
+
+                dataContext.Visits.Update(visit);
+                dataContext.SaveChanges();
+                RedirectToAction("ViewVisits");
+            
+            }
+            return View();
+
         }
     }
 }

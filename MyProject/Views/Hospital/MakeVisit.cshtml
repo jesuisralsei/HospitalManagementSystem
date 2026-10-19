@@ -1,0 +1,60 @@
+﻿@model MyProject.Models.Visits
+@{
+}
+<h2> Make a visit </h2>
+ <form asp-action="MakeVisit" method="post" class="needs-validation" novalidate> 
+	 <!--Here choose a doctor-->
+<label asp-for="DoctorName">What doctor</label>
+<select asp-for="DoctorName">
+	@{
+			var Doctor = ViewBag.Doctors;
+		}
+	@foreach(var doctor in Doctor)
+		{
+			<option>@doctor.DoctorName</option>
+		}
+	</select>
+
+<!--Here choose a Patient-->
+
+<label asp-for="PatientName">What Patient</label>
+<select asp-for="PatientName">
+	@{
+		var Patient = ViewBag.Patients;
+	}
+	@foreach (var patient in Patient)
+	{
+		<option>@patient.PatientName</option>
+	}
+</select>
+
+
+<!--Here choose a Department-->
+
+	<label asp-for="Department">What Department</label>
+<select asp-for="Department">
+	@{
+		var Department = ViewBag.Departments;
+	}
+	@foreach (var department in Department)
+	{
+		<option>@department.Name</option>
+	}
+</select>
+
+<!--Here Choose a date and a time-->
+	<label asp-for="VisitDate">What Date</label>
+
+	<input type="datetime-local" id="start" name="start"
+		   value="@DateTime.Now"
+		   min="@DateTime.Now" max="@DateTime.MaxValue" required>
+
+	<label asp-for="VisitDate">End Date & Time:</label>
+	<input type="datetime-local" id="end" name="end"
+		   value="2024-06-01T17:00"
+		   min="2024-06-01T00:00" max="2024-12-31T23:59" required>
+
+
+
+	<button type="submit" class="btn btn-success btn-lg text-white shadow-sm"></button>
+</form>

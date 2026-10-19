@@ -18,6 +18,8 @@ namespace MyProject.Data
 
         public DbSet<Department> Departments { get; set; }
 
+        public DbSet<Visits> Visits { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DoctorPatient>().HasKey(dp => new

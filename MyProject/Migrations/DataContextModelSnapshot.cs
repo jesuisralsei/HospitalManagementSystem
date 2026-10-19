@@ -117,7 +117,12 @@ namespace MyProject.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VisitsId")
+                        .HasColumnType("int");
+
                     b.HasKey("DoctorId");
+
+                    b.HasIndex("VisitsId");
 
                     b.HasIndex("DoctorPatientDoctorsDoctorId", "DoctorPatientPatientsPatientId");
 
@@ -187,7 +192,6 @@ namespace MyProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MedicalRecordPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientAge")
@@ -229,11 +233,17 @@ namespace MyProject.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
+                    b.Property<string>("DoctorName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PatientName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
@@ -245,11 +255,22 @@ namespace MyProject.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
                     b.ToTable("Visits");
+                });
+
+            modelBuilder.Entity("PatientVisits", b =>
+                {
+                    b.Property<int>("PatientsPatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VisitsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PatientsPatientId", "VisitsId");
+
+                    b.HasIndex("VisitsId");
+
+                    b.ToTable("PatientVisits");
                 });
 
             modelBuilder.Entity("DoctorPatient", b =>
@@ -269,6 +290,10 @@ namespace MyProject.Migrations
 
             modelBuilder.Entity("MyProject.Models.Doctor", b =>
                 {
+                    b.HasOne("MyProject.Models.Visits", null)
+                        .WithMany("Doctor")
+                        .HasForeignKey("VisitsId");
+
                     b.HasOne("MyProject.Models.DoctorPatient", null)
                         .WithMany("doctors")
                         .HasForeignKey("DoctorPatientDoctorsDoctorId", "DoctorPatientPatientsPatientId");
@@ -304,23 +329,22 @@ namespace MyProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyProject.Models.Doctor", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyProject.Models.Patient", "Patient")
-                        .WithMany("Visits")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Department");
+                });
 
-                    b.Navigation("Doctor");
+            modelBuilder.Entity("PatientVisits", b =>
+                {
+                    b.HasOne("MyProject.Models.Patient", null)
+                        .WithMany()
+                        .HasForeignKey("PatientsPatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Patient");
+                    b.HasOne("MyProject.Models.Visits", null)
+                        .WithMany()
+                        .HasForeignKey("VisitsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyProject.Models.DoctorPatient", b =>
@@ -330,9 +354,9 @@ namespace MyProject.Migrations
                     b.Navigation("patients");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Patient", b =>
+            modelBuilder.Entity("MyProject.Models.Visits", b =>
                 {
-                    b.Navigation("Visits");
+                    b.Navigation("Doctor");
                 });
 #pragma warning restore 612, 618
         }

@@ -24,7 +24,7 @@
                 </div>
 
                 <!-- Form Body -->
-                <form asp-action="AddPatient" method="post" class="card-body p-4 p-md-5">
+                <form asp-action="AddPatient" method="post" class="card-body p-4 p-md-5" enctype="multipart/form-data">
                     
                     <!-- Patient Name -->
                     <div class="mb-3">
@@ -86,6 +86,10 @@
                             </select>
                         </div>
                         <span asp-validation-for="DoctorId" class="text-danger small"></span>
+                    </div>
+                    <div>
+                        <label asp-for="MedicalRecord" class="form-label fw-semibold text-secondary"></label>
+                        <input asp-for="MedicalRecord" type="file" class="form-control form-control-lg" />
                     </div>
 
                     <!-- Action Buttons -->

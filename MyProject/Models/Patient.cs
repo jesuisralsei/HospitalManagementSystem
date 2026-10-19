@@ -31,6 +31,6 @@ namespace MyProject.Models
         [NotMapped]
         public IFormFile? MedicalRecord { get; set; }
 
-        public string MedicalRecordPath { get; set; } = null!;
+        public string? MedicalRecordPath { get; set; }
     }
 }

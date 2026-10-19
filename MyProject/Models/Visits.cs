@@ -5,10 +5,14 @@
         public int Id { get; set; }
 
         public int PatientId { get; set; }
-        public Patient Patient { get; set; } = null!;
+        public string? PatientName { get; set; }
+
+        public List<Patient> Patients { get; set; } = null!;
 
         public int DoctorId { get; set; }
-        public Doctor Doctor { get; set; } = null!;
+        public string? DoctorName { get; set; }
+
+        public List<Doctor> Doctor { get; set; } = null!;
 
         public int DepartmentId { get; set; }
         public Department Department { get; set; } = null!;

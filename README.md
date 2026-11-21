@@ -1,11 +1,10 @@
-# MyProject
 # 🏥 Hospital Management System
 
-An educational hospital management web application currently under development, built using ASP.NET Core MVC and C#.
+A hospital management web application built with ASP.NET Core MVC and C#, currently under development.
 
 ## 📌 Project Overview
 
-This project aims to provide a web-based system for organizing basic hospital operations, including patient, doctor, and department management.
+This project provides a web-based system for organizing basic hospital operations, including patient, doctor, and department management.
 
 It is being developed as a practical project to strengthen my skills in ASP.NET Core MVC, Entity Framework Core, relational database design, and server-side web development.
 
@@ -21,13 +20,15 @@ It is being developed as a practical project to strengthen my skills in ASP.NET 
 ## ✅ Current Implementation
 
 * Patient creation and listing
-* Doctor creation and listing
+* Doctor creation, editing, and listing
 * Department creation and listing
 * Entity Framework Core database integration
 * Model validation using `ModelState.IsValid`
 * Doctor–patient relationship loading
 * Dashboard statistics for patients, doctors, and departments
-* Doctor selection data for patient and department forms
+* Search and pagination on the doctors list
+* Login with role-based access (Admin-only add and edit actions)
+* Responsive layout using plain CSS, with no external front-end libraries
 
 Some functionality is still being developed and tested.
 
@@ -41,8 +42,8 @@ Some functionality is still being developed and tested.
 ## 🚧 Planned Improvements
 
 * Complete doctor–patient assignment workflow
+* Search and pagination for patients and departments
 * Improved validation and error handling
-* Dashboard and user interface improvements
 * Deployment and cloud database configuration
 
 ## ⚙️ Running the Project
@@ -60,7 +61,7 @@ Exact setup requirements may change as development continues.
 
 * Do not commit passwords, credentials, or production connection strings.
 * Use fictional data for demonstrations.
-* Do not use this educational prototype to store real patient records.
+* Do not use this prototype to store real patient records.
 
 ## 📍 Project Status
 
@@ -72,17 +73,10 @@ Features, architecture, and documentation may change as the project evolves.
 
 Developed as a personal learning and portfolio project.
 
-
 ## 📸 Screenshots
 
 ![Hospital Management System](HMS1.PNG)
 
-
-
 ![Hospital Management System](HMS2.PNG)
 
-
-
-
 ![Hospital Management System](HMS3.PNG)
-

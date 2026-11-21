@@ -1,140 +1,154 @@
-﻿@model IEnumerable<MyProject.Models.Doctor>
+﻿@model MyProject.Models.DoctorViewModel
 
 @{
-    ViewData["Title"] = "Doctors Directory";
+    ViewData["Title"] = "Doctors";
+    var isAdmin = User.IsInRole("Admin");
+    var doctors = Model?.Doctors;
+    var current = Model?.CurrentPage ?? 1;
+    var total = Model?.TotalPages ?? 0;
 }
 
-<div class="container py-5">
-    <!-- Header Section -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 pb-3 border-bottom">
-        <div>
-            <h1 class="fw-bold text-dark display-6 mb-1">
-                <i class="bi bi-person-badge-fill text-success me-2"></i>Medical Staff & Doctors
-            </h1>
-            <p class="text-muted mb-0">Browse doctor profiles, specialties, and their assigned patient lists.</p>
-        </div>
-        <div class="mt-3 mt-md-0 d-flex gap-2">
-            <a asp-action="AddDoctor" class="btn btn-success text-white fw-semibold shadow-sm px-4 py-2 rounded-pill">
-                <i class="bi bi-person-plus-fill me-1"></i> Add Doctor
-            </a>
-            <a asp-controller="Hospital" asp-action="DashBoard" class="btn btn-light border fw-semibold px-4 py-2 rounded-pill">
-                <i class="bi bi-arrow-left me-1"></i> Dashboard
-            </a>
-        </div>
+@section Styles {
+    <style>
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-bar input { flex: 1; }
+        .person { display: flex; align-items: center; gap: 12px; }
+        .person strong { display: block; line-height: 1.2; }
+        .person small { color: var(--text-muted); font-size: 12px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 4px; max-width: 260px; }
+        .chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--bg-subtle); border: 1px solid var(--border-color); }
+        .desc { max-width: 220px; font-size: 13px; color: var(--text-muted); }
+        .actions { white-space: nowrap; text-align: right; }
+        @@media (max-width: 640px) { .search-bar { flex-direction: column; } }
+    </style>
+}
+
+<div class="page-header">
+    <div>
+        <h1>Medical Staff &amp; Doctors</h1>
+        <p>Browse doctor profiles, specialties, and their assigned patient lists.</p>
     </div>
-
-    <!-- Doctors Table / Card Grid View -->
-    @if (Model != null && Model.Any())
+    @if (isAdmin)
     {
-        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light text-uppercase fs-xs" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                        <tr>
-                            <th class="py-3 ps-4">Doctor</th>
-                            <th class="py-3">Specialty / Professionality</th>
-                            <th class="py-3">Bio / Description</th>
-                            <th class="py-3 text-center">Age & Location</th>
-                            <th class="py-3">Assigned Patients</th>
-                            <th class="py-3 text-center">Details</th>
-                            <th class="py-3 pe-4 text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var doctor in Model)
-                        {
-                            <tr>
-                                <!-- Doctor Name & ID -->
-                                <td class="ps-4 py-3">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px; min-width: 45px;">
-                                            <i class="bi bi-person-fill fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="fw-bold text-dark mb-0">@doctor.DoctorName</h6>
-                                            <span class="text-muted" style="font-size: 0.75rem;">ID: #@doctor.DoctorId</span>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <!-- Professionality / Specialty -->
-                                <td>
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1.5 rounded-pill fw-semibold">
-                                        @(string.IsNullOrEmpty(doctor.DoctorProfessionality) ? "General Practice" : doctor.DoctorProfessionality)
-                                    </span>
-                                </td>
-
-                                <!-- Description -->
-                                <td>
-                                    <span class="text-muted small text-truncate d-block" style="max-width: 220px;" title="@doctor.DoctorDescription">
-                                        @(string.IsNullOrEmpty(doctor.DoctorDescription) ? "No description provided." : doctor.DoctorDescription)
-                                    </span>
-                                </td>
-
-                                <!-- Age & Location -->
-                                <td class="text-center">
-                                    <div class="small text-dark fw-medium">@doctor.DoctorAge yrs</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;"><i class="bi bi-geo-alt me-1"></i>@(string.IsNullOrEmpty(doctor.DoctorLocation) ? "Main Clinic" : doctor.DoctorLocation)</div>
-                                </td>
-
-                                <!-- Patients Badges -->
-                                <td class="py-3">
-                                    @if (doctor.Patients != null && doctor.Patients.Any())
-                                    {
-                                        <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
-                                            @foreach (var patient in doctor.Patients)
-                                            {
-                                                <span class="badge bg-light text-dark border px-2.5 py-1 rounded-pill small fw-normal">
-                                                    <i class="bi bi-person text-primary me-1"></i>@patient.PatientName
-                                                </span>
-                                            }
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted fst-italic small">No patients assigned</span>
-                                    }
-                                </td>
-
-                                <!-- Doctors Details Link -->
-                                <td class="py-3 text-center">
-                                    <a asp-controller="Hospital" asp-action="DoctorDetails" asp-route-id="@doctor.DoctorId" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-semibold">
-                                        <i class="bi bi-info-circle me-1"></i> Details
-                                    </a>
-                                </td>
-
-                                <!-- Edit Action -->
-                                <td class="pe-4 py-3 text-end">
-                                    <a asp-action="UpdateDoctor" asp-route-id="@doctor.DoctorId" class="btn btn-sm btn-success text-white rounded-pill px-3 shadow-sm fw-semibold">
-                                        <i class="bi bi-pencil-square me-1"></i> Edit
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
-    else
-    {
-        <!-- Empty State -->
-        <div class="text-center py-5 bg-white rounded-4 border border-2 border-dashed shadow-sm">
-            <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px; font-size: 2rem;">
-                <i class="bi bi-person-slash"></i>
-            </div>
-            <h3 class="fw-bold text-dark">No Doctors Found</h3>
-            <p class="text-muted small mb-4">Get started by onboarding your first doctor into the directory.</p>
-            <a asp-action="AddDoctor" class="btn btn-success text-white fw-semibold px-4 py-2 rounded-pill shadow-sm">
-                <i class="bi bi-person-plus-fill me-1"></i> Add Doctor
-            </a>
-        </div>
+        <a class="btn btn-primary" asp-action="AddDoctor">+ Add Doctor</a>
     }
 </div>
 
-<!-- Custom Polish Styles -->
-<style>
-    .table-hover tbody tr:hover {
-        background-color: rgba(25, 135, 84, 0.02);
+<form asp-action="Doctor" method="get" class="search-bar">
+    <input name="term" value="@Model?.Term" class="form-control" placeholder="Search doctors by name..." />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (doctors != null && doctors.Any())
+{
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Specialty</th>
+                    <th>Bio</th>
+                    <th>Age &amp; Location</th>
+                    <th>Assigned Patients</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in doctors)
+                {
+                    var initial = string.IsNullOrEmpty(d.DoctorName) ? "?" : d.DoctorName.Substring(0, 1).ToUpper();
+                    <tr>
+                        <td>
+                            <div class="person">
+                                <span class="avatar">@initial</span>
+                                <div>
+                                    <strong>@d.DoctorName</strong>
+                                    <small>ID: #@d.DoctorId</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge badge-primary">
+                                @(string.IsNullOrEmpty(d.DoctorProfessionality) ? "General Practice" : d.DoctorProfessionality)
+                            </span>
+                        </td>
+                        <td>
+                            <div class="desc truncate" title="@d.DoctorDescription">
+                                @(string.IsNullOrEmpty(d.DoctorDescription) ? "No description provided." : d.DoctorDescription)
+                            </div>
+                        </td>
+                        <td>
+                            <div>@d.DoctorAge yrs</div>
+                            <div class="muted small">@(string.IsNullOrEmpty(d.DoctorLocation) ? "Main Clinic" : d.DoctorLocation)</div>
+                        </td>
+                        <td>
+                            @if (d.Patients != null && d.Patients.Any())
+                            {
+                                <div class="chips">
+                                    @foreach (var p in d.Patients.Take(3))
+                                    {
+                                        <span class="chip">@p.PatientName</span>
+                                    }
+                                    @if (d.Patients.Count() > 3)
+                                    {
+                                        <span class="chip">+@(d.Patients.Count() - 3) more</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="muted small">No patients assigned</span>
+                            }
+                        </td>
+                        <td class="actions">
+                            <a class="btn btn-secondary btn-sm" asp-action="DoctorDetails" asp-route-id="@d.DoctorId">Details</a>
+                            @if (isAdmin)
+                            {
+                                <a class="btn btn-primary btn-sm" asp-action="UpdateDoctor" asp-route-id="@d.DoctorId">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (total > 1)
+    {
+        var start = Math.Max(1, current - 2);
+        var end = Math.Min(total, current + 2);
+
+        <div class="pagination">
+            @if (current > 1)
+            {
+                <a asp-action="Doctor" asp-route-term="@Model.Term" asp-route-OrderBy="@Model.OrderBy" asp-route-CurrentPage="@(current - 1)">&laquo;</a>
+            }
+            @for (var i = start; i <= end; i++)
+            {
+                if (i == current)
+                {
+                    <span class="current">@i</span>
+                }
+                else
+                {
+                    <a asp-action="Doctor" asp-route-term="@Model.Term" asp-route-OrderBy="@Model.OrderBy" asp-route-CurrentPage="@i">@i</a>
+                }
+            }
+            @if (current < total)
+            {
+                <a asp-action="Doctor" asp-route-term="@Model.Term" asp-route-OrderBy="@Model.OrderBy" asp-route-CurrentPage="@(current + 1)">&raquo;</a>
+            }
+        </div>
     }
-</style>
+}
+else
+{
+    <div class="card empty-state">
+        <h3>No Doctors Found</h3>
+        <p>No records match your search, or the directory is empty.</p>
+        @if (isAdmin)
+        {
+            <a class="btn btn-primary" asp-action="AddDoctor">+ Add Doctor</a>
+        }
+    </div>
+}

@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using IronPdf;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,6 +10,7 @@ using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using MyProject.Data;
 using MyProject.Models;
+using System.Drawing.Drawing2D;
 using System.Linq.Expressions;
 
 
@@ -101,6 +103,9 @@ namespace MyProject.Controllers
             //    FilePath = Path.GetFullPath(formfile.FileName)
 
             //};
+
+       
+            
             string fileName = Guid.NewGuid().ToString() + "_" + patient.MedicalRecord.FileName;
 
             string UploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
@@ -123,11 +128,49 @@ namespace MyProject.Controllers
         }
 
 
-        public IActionResult Doctor()
+        public IActionResult Doctor(string term = "", string orderby = "",int currentPage = 1)
         {
+                ViewData["NameSortParm"] = (String.IsNullOrEmpty(orderby)|| orderby == "name_asc") ? "name_desc" : "name_asc";
+                var DocData = new DoctorViewModel();
+                int pageSize = 10;
+                var query = dataContext.Doctors.AsQueryable();
 
-            var doctors = dataContext.Doctors.Include(d => d.Patients).ToList();
-            return View(doctors);
+           
+
+                if (!string.IsNullOrEmpty(term))
+                {
+                    query = query.Where(d => d.DoctorName.StartsWith(term));
+                }
+         
+
+
+                if (orderby == "name_desc")
+                {
+                    query = query.OrderByDescending(D => D.DoctorName);
+                    DocData.OrderBy = "name_desc";
+                }
+                else
+                {
+                    query = query.OrderBy(D => D.DoctorName);
+              
+                }
+                int totalRecords = query.Count();
+                int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+                var DoctorList = query.Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                DocData.Doctors = DoctorList;
+                DocData.CurrentPage = currentPage;
+                DocData.TotalPages = totalPages;
+                DocData.PageSize = pageSize;
+                DocData.Term = term;
+                DocData.OrderBy = orderby;
+
+
+
+                return View(DocData);
 
         }
 
@@ -162,6 +205,7 @@ namespace MyProject.Controllers
         //the get one for the departments
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult AddDepartment()
         {
@@ -173,6 +217,8 @@ namespace MyProject.Controllers
         //here to add a department
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public IActionResult AddDepartment(Department department)
         {
             if (ModelState.IsValid)
@@ -208,6 +254,8 @@ namespace MyProject.Controllers
         }
         // Get method for uploading medical records
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
 
         public async Task<IActionResult> UploadMedicalRecord(int patientId, IFormFile medicalRecord)
         {
@@ -232,10 +280,7 @@ namespace MyProject.Controllers
             return View("UploadMedicalRecord"); // Handle error case
         }
 
-        public IActionResult UploadMedicalRecord()
-        {
-            return View();
-        }
+     
 
         //patient details page
         public IActionResult PatientDetails(int? Id)
@@ -251,23 +296,64 @@ namespace MyProject.Controllers
 
         //update the patient information
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+
+
         public async Task<IActionResult> UpdatePatient(int Id)
         {
+            ViewBag.Doctors = dataContext.Doctors.ToList();
+
             var patient = await dataContext.Patients.FirstOrDefaultAsync(p => p.PatientId == Id);
             return View(patient);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> UpdatePatient(int Id, Patient patient)
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> UpdatePatient(
+            int Id, Patient patient, IFormFile medicalRecord)
         {
-            if (ModelState.IsValid)
+            var existingPatient = await dataContext.Patients
+                .FirstOrDefaultAsync(p => p.PatientId == Id);
+
+            if (existingPatient == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(patient);
+
+            // Update the patient's ordinary fields.
+            existingPatient.PatientName = patient.PatientName;
+            existingPatient.PatientAge = patient.PatientAge;
+            existingPatient.PatientLocation = patient.PatientLocation;
+            existingPatient.PatientDescription = patient.PatientDescription;
+
+            if (medicalRecord != null && medicalRecord.Length > 0)
             {
-                dataContext.Patients.Update(patient);
-               await dataContext.SaveChangesAsync();
-                return RedirectToAction($"PatientDetails/{Id}");
+                var uploadsFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot", "uploads");
+
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(medicalRecord.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await medicalRecord.CopyToAsync(stream);
+                }
+
+                existingPatient.MedicalRecordPath =
+                    Path.Combine("uploads", fileName);
             }
-            return View(patient);
+
+            await dataContext.SaveChangesAsync();
+
+            return RedirectToAction(
+                "PatientDetails",
+                new { id = existingPatient.PatientId });
         }
 
         //Doctor Details
@@ -285,6 +371,7 @@ namespace MyProject.Controllers
 
 
         //Update doctor
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> UpdateDoctor(int Id)
         {
@@ -294,6 +381,8 @@ namespace MyProject.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> UpdateDoctor(int Id, Doctor doctor)
         {
             if (ModelState.IsValid)

@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using MyProject.Roles
+@inject SignInManager<Users> signInManager;
+
+<ul class="navbar-nav ms-auto align-items-center">
+	@if (signInManager.IsSignedIn(User))
+	{
+	
+		<li class="nav-item">
+			<form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+				@Html.AntiForgeryToken()
+				<button type="submit" class="btn brn-link nav-link text-dark p-0">Logout</button>
+
+			</form>
+		</li>
+	
+	}
+	else
+	{
+		<li class="nav-link">
+
+			<a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+
+		</li>
+		<li class="nav-link">
+
+			<a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+
+		</li>
+	}
+
+
+</ul>

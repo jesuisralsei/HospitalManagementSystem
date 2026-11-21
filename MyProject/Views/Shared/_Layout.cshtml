@@ -1,22 +1,853 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class="h-100">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Hospital Management</title>
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-light h-100 d-flex flex-column justify-content-center align-items-center py-5">
+    <meta name="theme-color" content="#1e1b2e" />
+    <title>@ViewData["Title"] - Hospital Management System</title>
 
-    <main class="w-100">
+    <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
+            :root {
+                --primary-dark: #1e1b2e;
+                --primary-accent: #7c3aed;
+                --primary-accent-hover: #6d28d9;
+                --primary-soft: #f3ecff;
+                --primary-ring: rgba(124, 58, 237, 0.22);
+                --bg-body: #f4f5f9;
+                --bg-surface: #ffffff;
+                --bg-subtle: #f9fafb;
+                --text-main: #1f2937;
+                --text-muted: #6b7280;
+                --border-color: #e5e7eb;
+                --success: #16a34a;
+                --success-soft: #dcfce7;
+                --success-text: #166534;
+                --danger: #dc2626;
+                --danger-soft: #fee2e2;
+                --danger-text: #991b1b;
+                --warning: #d97706;
+                --warning-soft: #fef3c7;
+                --warning-text: #92400e;
+                --info: #2563eb;
+                --info-soft: #dbeafe;
+                --info-text: #1e40af;
+                --radius-sm: 6px;
+                --radius: 10px;
+                --radius-lg: 14px;
+                --shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.05);
+                --shadow: 0 1px 3px rgba(17, 24, 39, 0.06), 0 4px 12px rgba(17, 24, 39, 0.04);
+                --shadow-lg: 0 12px 28px rgba(17, 24, 39, 0.10);
+                --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-size: 15px;
+                line-height: 1.55;
+                background: var(--bg-body);
+                color: var(--text-main);
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            h1, h2, h3, h4 {
+                line-height: 1.25;
+                letter-spacing: -0.015em;
+            }
+
+            a {
+                color: var(--primary-accent);
+                text-decoration: none;
+            }
+
+                a:hover {
+                    color: var(--primary-accent-hover);
+                }
+
+            ::selection {
+                background: var(--primary-ring);
+            }
+
+            :focus-visible {
+                outline: 2px solid var(--primary-accent);
+                outline-offset: 2px;
+                border-radius: 4px;
+            }
+
+            /* ---------- Header ---------- */
+            header {
+                background: linear-gradient(135deg, #1e1b2e 0%, #2a2545 100%);
+                color: #ffffff;
+                padding: 14px 32px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 16px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 18px;
+                font-weight: 700;
+                letter-spacing: -0.01em;
+                color: #ffffff;
+                text-decoration: none;
+            }
+
+                .brand:hover {
+                    color: #ffffff;
+                }
+
+            .brand-icon {
+                width: 30px;
+                height: 30px;
+                background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 2px 8px rgba(124, 58, 237, 0.45);
+            }
+
+            /* Fixes default ASP.NET LoginPartial <ul> bullets and vertical stacking */
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .header-actions ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .header-actions li {
+                    margin: 0;
+                    padding: 0;
+                }
+
+            .role {
+                font-size: 12px;
+                font-weight: 600;
+                padding: 5px 10px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.12);
+                color: #e5e7eb;
+                letter-spacing: 0.02em;
+            }
+
+            .header-actions a,
+            .header-actions button {
+                color: #f3f4f6;
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                border-radius: var(--radius-sm);
+                padding: 7px 14px;
+                text-decoration: none;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+                font-family: inherit;
+                transition: background-color 0.15s var(--ease), border-color 0.15s var(--ease);
+                display: inline-block;
+            }
+
+                .header-actions a:hover,
+                .header-actions button:hover {
+                    background: var(--primary-accent);
+                    border-color: var(--primary-accent);
+                    color: #ffffff;
+                }
+
+            /* ---------- Navigation ---------- */
+            nav {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                background: var(--bg-surface);
+                padding: 0 32px;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: var(--shadow-sm);
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+                nav a {
+                    color: var(--text-muted);
+                    text-decoration: none;
+                    font-size: 14px;
+                    font-weight: 500;
+                    padding: 14px 12px;
+                    border-bottom: 2px solid transparent;
+                    transition: color 0.15s var(--ease), border-color 0.15s var(--ease), background-color 0.15s var(--ease);
+                }
+
+                    nav a:hover {
+                        color: var(--primary-accent);
+                        background: var(--bg-subtle);
+                    }
+
+                    nav a.active {
+                        color: var(--primary-accent);
+                        border-bottom-color: var(--primary-accent);
+                        font-weight: 600;
+                    }
+
+            .nav-divider {
+                width: 1px;
+                height: 20px;
+                background: var(--border-color);
+                margin: 0 8px;
+            }
+
+            /* ---------- Main / Footer ---------- */
+            main {
+                flex: 1;
+                width: 100%;
+                max-width: 1280px;
+                margin: 0 auto;
+                padding: 32px 24px;
+                animation: page-in 0.25s var(--ease);
+            }
+
+            footer {
+                padding: 18px 24px;
+                text-align: center;
+                color: var(--text-muted);
+                font-size: 13px;
+                border-top: 1px solid var(--border-color);
+                background: var(--bg-surface);
+            }
+
+            @@keyframes page-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(6px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
+
+            /* ---------- Page header ---------- */
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-bottom: 24px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+                .page-header h1 {
+                    margin: 0 0 4px;
+                    font-size: 26px;
+                    font-weight: 800;
+                }
+
+                .page-header p {
+                    margin: 0;
+                    color: var(--text-muted);
+                    font-size: 14px;
+                }
+
+            /* ---------- Buttons ---------- */
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                padding: 9px 16px;
+                border-radius: var(--radius-sm);
+                border: 1px solid transparent;
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 1.2;
+                cursor: pointer;
+                text-decoration: none;
+                transition: background-color 0.15s var(--ease), box-shadow 0.15s var(--ease), transform 0.1s var(--ease), border-color 0.15s var(--ease);
+            }
+
+                .btn:active {
+                    transform: translateY(1px);
+                }
+
+                .btn:disabled {
+                    opacity: 0.55;
+                    cursor: not-allowed;
+                }
+
+            .btn-primary {
+                background: var(--primary-accent);
+                color: #fff;
+                box-shadow: 0 1px 2px rgba(124, 58, 237, 0.35);
+            }
+
+                .btn-primary:hover {
+                    background: var(--primary-accent-hover);
+                    color: #fff;
+                    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+                }
+
+            .btn-secondary {
+                background: var(--bg-surface);
+                color: var(--text-main);
+                border-color: var(--border-color);
+            }
+
+                .btn-secondary:hover {
+                    background: var(--bg-subtle);
+                    border-color: #d1d5db;
+                    color: var(--text-main);
+                }
+
+            .btn-danger {
+                background: var(--danger);
+                color: #fff;
+            }
+
+                .btn-danger:hover {
+                    background: #b91c1c;
+                    color: #fff;
+                }
+
+            .btn-ghost {
+                background: transparent;
+                color: var(--primary-accent);
+            }
+
+                .btn-ghost:hover {
+                    background: var(--primary-soft);
+                }
+
+            .btn-sm {
+                padding: 5px 10px;
+                font-size: 13px;
+            }
+
+            /* ---------- Cards ---------- */
+            .card {
+                background: var(--bg-surface);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-lg);
+                padding: 20px;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .card-title {
+                margin: 0 0 12px;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+            .card-hover {
+                transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
+            }
+
+                .card-hover:hover {
+                    transform: translateY(-3px);
+                    box-shadow: var(--shadow-lg);
+                    border-color: #ddd6fe;
+                }
+
+            /* ---------- Stat cards (dashboard) ---------- */
+            .stat-card {
+                position: relative;
+                overflow: hidden;
+            }
+
+                .stat-card::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 4px;
+                    background: var(--primary-accent);
+                }
+
+            .stat-label {
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: var(--text-muted);
+            }
+
+            .stat-value {
+                font-size: 32px;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+                margin-top: 4px;
+            }
+
+            .stat-hint {
+                font-size: 13px;
+                color: var(--text-muted);
+                margin-top: 2px;
+            }
+
+            /* ---------- Badges ---------- */
+            .badge {
+                display: inline-block;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 3px 10px;
+                border-radius: 999px;
+                white-space: nowrap;
+            }
+
+            .badge-primary {
+                background: var(--primary-soft);
+                color: var(--primary-accent-hover);
+            }
+
+            .badge-success {
+                background: var(--success-soft);
+                color: var(--success-text);
+            }
+
+            .badge-danger {
+                background: var(--danger-soft);
+                color: var(--danger-text);
+            }
+
+            .badge-warning {
+                background: var(--warning-soft);
+                color: var(--warning-text);
+            }
+
+            .badge-info {
+                background: var(--info-soft);
+                color: var(--info-text);
+            }
+
+            /* ---------- Tables ---------- */
+            .table-wrap {
+                overflow-x: auto;
+                background: var(--bg-surface);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-sm);
+            }
+
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+                .table th, .table td {
+                    text-align: left;
+                    padding: 12px 16px;
+                    border-bottom: 1px solid var(--border-color);
+                }
+
+                .table th {
+                    background: var(--bg-subtle);
+                    color: var(--text-muted);
+                    font-size: 12px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    white-space: nowrap;
+                }
+
+                .table tbody tr {
+                    transition: background-color 0.12s var(--ease);
+                }
+
+                    .table tbody tr:hover {
+                        background: var(--primary-soft);
+                    }
+
+                    .table tbody tr:last-child td {
+                        border-bottom: 0;
+                    }
+
+            /* ---------- Forms ---------- */
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+                .form-group label, .form-label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+            .form-control, select, textarea {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #d1d5db;
+                border-radius: var(--radius-sm);
+                background: var(--bg-surface);
+                color: var(--text-main);
+                font-family: inherit;
+                font-size: 14px;
+                transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+            }
+
+                .form-control:focus, select:focus, textarea:focus {
+                    outline: none;
+                    border-color: var(--primary-accent);
+                    box-shadow: 0 0 0 3px var(--primary-ring);
+                }
+
+                .form-control::placeholder {
+                    color: #9ca3af;
+                }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 16px;
+            }
+
+            .form-actions {
+                display: flex;
+                gap: 10px;
+                margin-top: 8px;
+            }
+
+            /* ASP.NET validation */
+            .text-danger, .field-validation-error {
+                color: var(--danger);
+                font-size: 13px;
+                display: block;
+                margin-top: 4px;
+            }
+
+            .input-validation-error {
+                border-color: var(--danger) !important;
+            }
+
+                .input-validation-error:focus {
+                    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18) !important;
+                }
+
+            .validation-summary-errors {
+                background: var(--danger-soft);
+                color: var(--danger-text);
+                border-radius: var(--radius-sm);
+                padding: 10px 14px;
+                margin-bottom: 16px;
+                font-size: 14px;
+            }
+
+                .validation-summary-errors ul {
+                    margin: 0;
+                    padding-left: 18px;
+                }
+
+            .validation-summary-valid {
+                display: none;
+            }
+
+            /* ---------- Alerts ---------- */
+            .alert {
+                padding: 12px 16px;
+                border-radius: var(--radius-sm);
+                margin-bottom: 16px;
+                font-size: 14px;
+                border-left: 4px solid;
+            }
+
+            .alert-success {
+                background: var(--success-soft);
+                color: var(--success-text);
+                border-color: var(--success);
+            }
+
+            .alert-danger {
+                background: var(--danger-soft);
+                color: var(--danger-text);
+                border-color: var(--danger);
+            }
+
+            .alert-warning {
+                background: var(--warning-soft);
+                color: var(--warning-text);
+                border-color: var(--warning);
+            }
+
+            .alert-info {
+                background: var(--info-soft);
+                color: var(--info-text);
+                border-color: var(--info);
+            }
+
+            /* ---------- Avatar ---------- */
+            .avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+                color: #fff;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+
+            /* ---------- Pagination ---------- */
+            .pagination {
+                display: flex;
+                gap: 6px;
+                justify-content: center;
+                margin-top: 24px;
+                flex-wrap: wrap;
+            }
+
+                .pagination a, .pagination span {
+                    min-width: 36px;
+                    padding: 7px 12px;
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: 500;
+                    border: 1px solid var(--border-color);
+                    border-radius: var(--radius-sm);
+                    background: var(--bg-surface);
+                    color: var(--text-main);
+                }
+
+                    .pagination a:hover {
+                        border-color: var(--primary-accent);
+                        color: var(--primary-accent);
+                    }
+
+                .pagination .current {
+                    background: var(--primary-accent);
+                    border-color: var(--primary-accent);
+                    color: #fff;
+                }
+
+            /* ---------- Empty state ---------- */
+            .empty-state {
+                text-align: center;
+                padding: 56px 24px;
+                border-style: dashed;
+                border-width: 2px;
+                background: var(--bg-subtle);
+            }
+
+                .empty-state h3 {
+                    margin: 0 0 6px;
+                    font-size: 20px;
+                }
+
+                .empty-state p {
+                    margin: 0 0 20px;
+                    color: var(--text-muted);
+                    font-size: 14px;
+                }
+
+            /* ---------- Layout utilities ---------- */
+            .grid {
+                display: grid;
+                gap: 20px;
+            }
+
+            .grid-auto {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+
+            .grid-stats {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+
+            .flex {
+                display: flex;
+            }
+
+            .between {
+                justify-content: space-between;
+            }
+
+            .center {
+                align-items: center;
+            }
+
+            .wrap {
+                flex-wrap: wrap;
+            }
+
+            .gap {
+                gap: 12px;
+            }
+
+            .muted {
+                color: var(--text-muted);
+            }
+
+            .small {
+                font-size: 13px;
+            }
+
+            .mt {
+                margin-top: 20px;
+            }
+
+            .mb {
+                margin-bottom: 20px;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+
+            .truncate {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* ---------- Responsive ---------- */
+            @@media (max-width: 640px) {
+                header {
+                    padding: 14px 16px;
+                }
+
+                nav {
+                    padding: 4px 16px;
+                }
+
+                    nav a {
+                        padding: 10px 8px;
+                    }
+
+                .nav-divider {
+                    display: none;
+                }
+
+                main {
+                    padding: 20px 16px;
+                }
+
+                .page-header h1 {
+                    font-size: 22px;
+                }
+
+                .stat-value {
+                    font-size: 26px;
+                }
+            }
+
+            /* ---------- Accessibility / print ---------- */
+            @@media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation: none !important;
+                    transition: none !important;
+                    scroll-behavior: auto !important;
+                }
+            }
+
+            @@media print {
+                header, nav, footer, .btn {
+                    display: none !important;
+                }
+
+                body {
+                    background: #fff;
+                }
+
+                main {
+                    max-width: none;
+                    padding: 0;
+                    animation: none;
+                }
+
+                .card, .table-wrap {
+                    box-shadow: none;
+                }
+            }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header>
+        <a class="brand" asp-controller="Hospital" asp-action="DashBoard">
+            <span class="brand-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+            </span>
+            <span>Hospital Management System</span>
+        </a>
+
+        <div class="header-actions">
+            @await Html.PartialAsync("LoginPartial")
+        </div>
+    </header>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <nav id="main-nav">
+            <a asp-controller="Hospital" asp-action="DashBoard">Dashboard</a>
+            <a asp-controller="Hospital" asp-action="Patient">Patients</a>
+            <a asp-controller="Hospital" asp-action="Doctor">Doctors</a>
+            <a asp-controller="Hospital" asp-action="Departments">Departments</a>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="nav-divider" aria-hidden="true"></span>
+                <a asp-controller="Hospital" asp-action="AddPatient">+ Add Patient</a>
+                <a asp-controller="Hospital" asp-action="AddDoctor">+ Add Doctor</a>
+                <a asp-controller="Hospital" asp-action="AddDepartment">+ Add Department</a>
+            }
+        </nav>
+    }
+
+    <main>
         @RenderBody()
     </main>
 
-    <!-- Bootstrap JS Bundle CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <footer>
+        &copy; @DateTime.Now.Year Hospital Management System
+    </footer>
+
+    <script>
+            // Lightweight active link highlighter
+            (function () {
+                const currentPath = window.location.pathname.toLowerCase();
+                document.querySelectorAll('#main-nav a').forEach(link => {
+                    const href = link.getAttribute('href')?.toLowerCase();
+                    if (href && (currentPath === href || (href !== '/' && currentPath.startsWith(href)))) {
+                        link.classList.add('active');
+                        link.setAttribute('aria-current', 'page');
+                    }
+                });
+            })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

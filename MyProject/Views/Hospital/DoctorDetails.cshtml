@@ -80,11 +80,15 @@
                 <a asp-action="DashBoard" class="btn btn-outline-secondary px-4 rounded-pill">
                     <i class="bi bi-arrow-left me-1"></i> Back to Directory
                 </a>
+                @if(User.IsInRole("Admin")){
+
+                
                 <a asp-action="UpdateDoctor" asp-route-id="@Model.DoctorId" class="btn btn-success px-4 rounded-pill shadow-sm">
                     <i class="bi bi-pencil-square me-1"></i> Edit Doctor
                 </a>
+                }
             </div>
-
+            
         </div>
     </div>
 </div>

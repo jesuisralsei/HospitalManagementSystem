@@ -24,7 +24,7 @@
                 </div>
 
                 <!-- Form Body -->
-                <form asp-action="UpdatePatient" method="post" class="card-body p-4 p-md-5">
+                <form asp-action="UpdatePatient" method="post" class="card-body p-4 p-md-5" enctype="multipart/form-data">
 
                     <!-- Patient Name -->
                     <div class="mb-3">
@@ -87,7 +87,20 @@
                         </div>
                         <span asp-validation-for="DoctorId" class="text-danger small"></span>
                     </div>
+                    <!--upload form-->
+                 
+                        <div class="mb-3">
+                            <label asp-for="MedicalRecord" class="form-label fw-semibold text-secondary"></label>
+                            <input asp-for="MedicalRecord" type="file" class="form-control form-control-lg" />
+                            <span asp-validation-for="MedicalRecord" class="text-danger small mt-1 d-block"></span>
+                        </div>
 
+                        <!-- Hidden Inputs -->
+                        <input type="hidden" asp-for="PatientId" />
+                        <input type="hidden" asp-for="MedicalRecordPath" />
+
+                     
+                    
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2 pt-2">
                         <button type="submit" class="btn btn-primary fw-semibold py-3 rounded-pill shadow-sm">

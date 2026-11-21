@@ -6,7 +6,7 @@
 
         public string FilePath { get; set; } = null!;
 
-        
+        public IFormFile FormFile { get; set; }
 
     }
 }

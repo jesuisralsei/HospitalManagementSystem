@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyProject.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using MyProject.Roles;
+
 
 namespace MyProject.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<Users>
     {
         public DataContext(DbContextOptions<DataContext> options ) : base(options)
         {
@@ -12,6 +15,7 @@ namespace MyProject.Data
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
 
+        
         public DbSet<DoctorPatient> doctorPatients { get; set; }
 
         public DbSet<Management> Managements { get; set; }
@@ -20,13 +24,6 @@ namespace MyProject.Data
 
         public DbSet<Visits> Visits { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<DoctorPatient>().HasKey(dp => new
-            {
-                dp.DoctorsDoctorId,
-                dp.PatientsPatientId
-            });
-        }
+       
     }
 }
